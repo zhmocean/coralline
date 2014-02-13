@@ -4,8 +4,13 @@ import router
 
 class s_index:
     def GET(self, name):
-        print globals()["router"].ips
-        return globals()["router"].getIpByType(name)
+        chip = name.split("/")
+        print name
+        newPlace = name.replace(chip[0], "", 1)
+        #print newPlace
+        newPlace = web.ctx.protocol+"://"+globals()["router"].getIpByType(chip[0])+newPlace
+        #print newPlace
+        web.redirect(newPlace)
 
 
 class up_service:
@@ -33,7 +38,7 @@ class TinyWeb:
 
     def __urls(self):
         return (
-            '/(.*)','s_index',
+            '/(.+)', 's_index',
             '/up', 'up_service'
         )
 
