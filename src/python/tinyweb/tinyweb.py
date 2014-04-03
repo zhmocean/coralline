@@ -1,6 +1,6 @@
 import web
-import yaml
 import router
+import hashlib
 
 class s_index:
     def GET(self, name):
@@ -12,23 +12,30 @@ class s_index:
         #print newPlace
         web.redirect(newPlace)
 
+class me_service:
+    def GET(self):
+        #ip from Front-Point header proxy
+        return "Address: " +web.ctx.env.get("HTTP_X_REAL_IP")
 
 class up_service:
     def GET(self):
         inputs = web.input()
-        pwd = inputs.get("password")
+        sig = inputs.get("sig")
+        rand = inputs.get("rand")
         ip = inputs.get("ip")
         type_name = inputs.get("type")
 
-        if (self.__checkPwd(pwd)):
+        if (self.__checkPwd(sig, rand)):
             print globals()["router"]
             globals()["router"].changeIp(ip, type_name)
 
             return '{"result":"success"}'
         return '{"result":"failed", "message":"pwd error"}'
 
-    def __checkPwd(self, pwd):
-        return pwd == "mypassword"
+    def __checkPwd(self, sig, rand):
+        #nowSig = hashlib.md5("mypassword"+rand).hexdigest().lower()
+        #return nowSig == sig.lower()
+        return "mypassword" == sig
 
 
 class TinyWeb:
@@ -38,8 +45,9 @@ class TinyWeb:
 
     def __urls(self):
         return (
-            '/(.+)', 's_index',
-            '/up', 'up_service'
+            '/up', 'up_service',
+            '/me', 'me_service',
+            '/(.+)', 's_index'
         )
 
     def start(self):
