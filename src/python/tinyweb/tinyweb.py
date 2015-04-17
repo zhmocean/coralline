@@ -8,9 +8,13 @@ class s_index:
         print name
         newPlace = name.replace(chip[0], "", 1)
         #print newPlace
-        newPlace = web.ctx.protocol+"://"+globals()["router"].getIpByType(chip[0])+newPlace
-        #print newPlace
-        web.redirect(newPlace)
+        realPlace = globals()["router"].getConfigByType(chip[0])
+        if realPlace:
+            newPlace = web.ctx.protocol+"://"+realPlace["ip"]+("" if realPlace["port"] == "80" else ":"+realPlace["port"] )+newPlace
+            #print newPlace
+            web.redirect(newPlace)
+        else:
+            return "what's mean?"
 
 class me_service:
     def GET(self):
@@ -23,11 +27,12 @@ class up_service:
         sig = inputs.get("sig")
         rand = inputs.get("rand")
         ip = inputs.get("ip")
+        port = inputs.get("port")
         type_name = inputs.get("type")
 
         if (self.__checkPwd(sig, rand)):
             print globals()["router"]
-            globals()["router"].changeIp(ip, type_name)
+            globals()["router"].changeIp(ip, type_name, port)
 
             return '{"result":"success"}'
         return '{"result":"failed", "message":"pwd error"}'
