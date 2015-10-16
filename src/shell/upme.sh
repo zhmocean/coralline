@@ -1,9 +1,9 @@
 #!/bin/bash
 
-IP_SERVER="cloud.tangcu.biz/me"
+IP_SERVER="[yourhost]/me"
 IP_SKIP="Address: "
-PASSWORD="mypassword"
-UP_SERVER="cloud.tangcu.biz/up"
+PASSWORD="password"
+UP_SERVER="[yourhost]/up"
 UP_TYPE="home"
 
 
